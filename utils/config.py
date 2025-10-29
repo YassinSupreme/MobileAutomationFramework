@@ -205,3 +205,21 @@ def free_port(start_port=4723):
                 return port
             except OSError:
                 port += 1
+
+
+def get_lambdatest_config():
+    """
+    Get LambdaTest configuration from properties.ini
+    """
+    config = getConfig()
+    return {
+        "username": config.get("LambdaTest", "username"),
+        "access_key": config.get("LambdaTest", "access_key"),
+        "grid_url": config.get("LambdaTest", "grid_url"),
+        "device_name": config.get("LambdaTest", "device_name"),
+        "platform_version": config.get("LambdaTest", "platform_version"),
+        "build_name": config.get("LambdaTest", "build_name"),
+        "project_name": config.get("LambdaTest", "project_name"),
+        "app_url": config.get("LambdaTest", "app_url", fallback=""),
+        "upload_strategy": config.get("LambdaTest", "upload_strategy", fallback="auto"),
+    }

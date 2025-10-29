@@ -124,6 +124,65 @@ allure serve reports/allure_report/<smoke/regression>_report_allure
 This will create an HTML, allure report, automatically attach failed screenshot in report. You can find report in reports directory, report automatically will open in browser.
 * You can configure Jenkins to parameterized run your test cases & generate html report, allure report, junit report. Also send mail to recipient (pending for implementation).
 
+## Local Android (ADB/Emulator) Quick Start
+
+1. Install Appium 2 and UiAutomator2 driver:
+```
+npm i -g appium@latest
+appium driver install uiautomator2
+```
+2. Ensure Android Platform Tools (adb) are available:
+```
+brew install android-platform-tools
+adb version
+```
+3. Start an emulator in Android Studio (Tools → Device Manager) or connect a physical device (enable USB debugging). Verify:
+```
+adb devices
+# Expect: emulator-5554    device
+```
+4. Activate venv and run tests locally (Appium server auto-starts from fixtures):
+```
+source venv/bin/activate
+pytest tests/test_android/test_sample.py -v --alluredir=reports/allure-results
+```
+
+Troubleshooting:
+- If adb shows offline: `adb kill-server && adb start-server && adb devices`
+- If Appium ≤ 1.22 error: upgrade Appium to 2.x as above
+- APK should exist at `app/android/General-Store.apk`
+
+## LambdaTest Cloud Execution
+
+1. Configure credentials in `config/properties.ini` under `[LambdaTest]`:
+```
+username = YOUR_LAMBDATEST_USERNAME
+access_key = YOUR_LAMBDATEST_ACCESS_KEY
+grid_url = https://mobile-hub.lambdatest.com/wd/hub
+device_name = Samsung Galaxy S23 Ultra
+platform_version = 13
+build_name = Mobile Automation Tests
+project_name = Mobile Automation Framework
+
+# Optional if you pre-upload your app in LambdaTest Storage
+app_url = lt://APP_ID_FROM_LAMBDATEST
+# upload_strategy: auto | skip
+#  - auto: upload local APK if app_url is empty
+#  - skip: never upload, use app_url
+upload_strategy = auto
+```
+2. Recommended: pre-upload app via LambdaTest dashboard and set `app_url`, then `upload_strategy = skip` to avoid flaky uploads.
+
+3. Run via helper script (backs up local conftest and uses cloud conftest):
+```
+source venv/bin/activate
+python run_lambdatest_tests.py tests/test_android/test_sample.py
+```
+
+Notes:
+- Cloud conftest uploads using `https://manual-api.lambdatest.com/app/upload` when `upload_strategy=auto`.
+- Failed screenshots go to `reports/screenshots/failed/`; Allure results to `reports/allure-results`.
+
 ## Sample Test Report
 
 ![Allure report screenshot](https://raw.githubusercontent.com/startrug/phptravels-selenium-py/screenshots/allure_report.png "Allure report screenshot")

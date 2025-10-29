@@ -1,0 +1,11 @@
+{
+    "platformName": "Android",
+    "platformVersion": "16",
+    "app": "/Users/yassin/Appium/MobileAutomationFramework/app/android/General-Store.apk",
+    "automationName": "UIAutomator2",
+    "appPackage": "com.androidsample.generalstore",
+    "appActivity": "com.androidsample.generalstore.SplashActivity",
+    "autoGrantPermissions": true,
+    "udid": "emulator-5554",
+    "newCommandTimeout": 300
+}
